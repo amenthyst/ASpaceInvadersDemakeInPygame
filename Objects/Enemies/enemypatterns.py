@@ -1,5 +1,5 @@
 import random
-numberofenemies = 30
+numberofenemies = 50
 enemiesinrow = 5
 rows = int(numberofenemies/enemiesinrow)
 def patterns():
@@ -10,6 +10,9 @@ def patterns():
         for j in range(1,enemiesinrow+1):
             enemydata = []
             index = random.randint(1,2)
+            blankchance = random.randint(1,10)
+            if blankchance == 1:
+                index = None
             enemydata.append((j*100, posy))
             enemydata.append(index)
             pattern.append(enemydata)
@@ -27,5 +30,7 @@ def alienobject():
             main.objects.append(Alien(main.alientexture, tuple(pattern[i][0]), 2, 0.8, 15))
         elif pattern[i][1] == 2:
             main.objects.append(Deflectalien(main.deflectalientexture, tuple(pattern[i][0]), 1, 1.2, 15))
+        else:
+            continue
 
 

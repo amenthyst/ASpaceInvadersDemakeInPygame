@@ -13,13 +13,13 @@ pygame.display.set_caption("Programming Project")
 clock = pygame.time.Clock()
 
 background = textandimages.renderbackground()
-spaceshiphigh, spaceshipmid, spaceshiplow, bullet, deflectbullettexture, dangerzone, superbullettexture, lasertexture = textandimages.rendergraphics()
+spaceshiphigh, spaceshipmid, spaceshiplow, spaceshiplaserlow, spaceshiplaserhigh, bullet, deflectbullettexture, dangerzone, superbullettexture, lasertexture = textandimages.rendergraphics()
 alientexture, deflectalientexture = textandimages.renderenemies()
 hearttexture, energytexture = textandimages.renderpowerups()
 
 font = pygame.font.Font('Graphics/ARCADECLASSIC.TTF', 25)
 
-objects = [ShipObject(spaceshiphigh, spaceshipmid, spaceshiplow, (300,550), 8, 100, 100,0), HealthBar(100, hearttexture), Dangerzone(dangerzone, (0,580)), Energybar(5,energytexture)]
+objects = [ShipObject(spaceshiphigh, spaceshipmid, spaceshiplow, (300,550), 8, 100, 100,0, 0.25), HealthBar(100, hearttexture), Dangerzone(dangerzone, (0,580)), Energybar(5,energytexture)]
 alienobject()
 while True:
     for event in pygame.event.get():

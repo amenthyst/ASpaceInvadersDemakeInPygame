@@ -12,6 +12,10 @@ def rendergraphics():
     spaceshipmid = pygame.transform.scale(spaceshipmid, (80, 80))
     spaceshiplow = pygame.image.load("Graphics/spaceships/spaceshiplow.png").convert_alpha()
     spaceshiplow = pygame.transform.scale(spaceshiplow, (80, 80))
+    spaceshiplaserlow = pygame.image.load("Graphics/spaceships/spaceshiplaserlow.png").convert_alpha()
+    spaceshiplaserlow = pygame.transform.scale(spaceshiplaserlow,(80,80))
+    spaceshiplaserhigh = pygame.image.load("Graphics/spaceships/spaceshiplaserhigh.png").convert_alpha()
+    spaceshiplaserhigh = pygame.transform.scale(spaceshiplaserhigh, (80,80))
     bullet = pygame.image.load("Graphics/bullets/bullet.png").convert_alpha()
     bullet = pygame.transform.scale(bullet,(15,15))
     deflectbullettexture = pygame.image.load("Graphics/bullets/deflectedbullet.png").convert_alpha()
@@ -22,7 +26,7 @@ def rendergraphics():
     superbullettexture = pygame.transform.scale(superbullettexture, (30,120))
     lasertexture = pygame.image.load("Graphics/bullets/laser.png").convert_alpha()
     lasertexture = pygame.transform.scale(lasertexture, (30,20))
-    return spaceshiphigh, spaceshipmid, spaceshiplow, bullet, deflectedbullettexture, dangerzone, superbullettexture, lasertexture
+    return spaceshiphigh, spaceshipmid, spaceshiplow, spaceshiplaserlow, spaceshiplaserhigh, bullet, deflectedbullettexture, dangerzone, superbullettexture, lasertexture
 def renderenemies():
     alientexture = pygame.image.load("Graphics/enemies/alien.png").convert_alpha()
     alientexture = pygame.transform.scale(alientexture, (40,40))
