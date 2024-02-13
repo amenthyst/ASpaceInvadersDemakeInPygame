@@ -35,3 +35,5 @@ class Energybar(Gameobject):
         return self.energyrect
     def getID(self):
         return "Energybar"
+    def damage(self,damage):
+        pass

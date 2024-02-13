@@ -4,7 +4,7 @@ from Objects.Ship.bullet import Bullet
 from Otherscripts.damagable import damagable
 from Objects.Ship.superbullet import Superbullet
 from Objects.Ship.laser import Laser
-
+from Objects.Enemies.explosion import Explosion
 
 class ShipObject(Gameobject, damagable):
     def __init__(self, spaceshiphigh, spaceshipmid, spaceshiplow, position: tuple, speed: float, health: float, maxhealth: float, energyvalue: int, bulletcooldown: float):
@@ -69,45 +69,58 @@ class ShipObject(Gameobject, damagable):
     def getrect(self):
         return self.shiprect
     def update(self):
+        import main
         keys = pygame.key.get_pressed()
         self.move()
         self.checktexture()
-
-
 
 
         if self.manualflag:
             # only shoots 1 bullet per press, doesn't shoot continuously as the space key is held
             if self.bulletlastframe == False and keys[pygame.K_SPACE]:
                 self.shoot()
+
             self.bulletlastframe = keys[pygame.K_SPACE]
         elif self.semiflag:
             if keys[pygame.K_SPACE]:
                 self.semishoot()
 
-        if keys[pygame.K_t] and self.switchlastframe == False:
+
+        if keys[pygame.K_q] and self.switchlastframe == False:
             self.switch()
-        self.switchlastframe = keys[pygame.K_t]
+        self.switchlastframe = keys[pygame.K_q]
 
         if self.superbulletlastframe == False and keys[pygame.K_r] and self.energyvalue > 0:
             self.releasesuperbullet()
             self.energyvalue -= 1
         self.superbulletlastframe = keys[pygame.K_r]
 
-
+        if keys[pygame.K_t]:
+            self.energycheat()
 
 
         if keys[pygame.K_e] and self.energyvalue > 0:
             self.laser()
-        if keys[pygame.K_q]:
-            self.energycheat()
+            pygame.mixer.Sound.set_volume(main.lasersfx, 0.2)
+            main.lasersfx.play()
+        else:
+            main.lasersfx.stop()
+
 
     def damage(self, damage):
+        import main
         self.health -= damage
+        pygame.mixer.Sound.set_volume(main.damagesfx, 0.2)
+        main.damagesfx.play()
         self.checktexture()
         if self.health <= 0:
-            import main
+            main.explosion = pygame.transform.scale(main.explosion, (100,100))
+            death = Explosion((self.shiprect.x, self.shiprect.y), main.explosion)
+            main.objects.append(death)
+            pygame.mixer.Sound.set_volume(main.boomsfx, 0.5)
+            main.boomsfx.play()
             main.objects.remove(self)
+            main.lasersfx.stop()
 
     def switch(self):
         self.manualflag, self.semiflag = self.semiflag, self.manualflag
@@ -120,27 +133,42 @@ class ShipObject(Gameobject, damagable):
     def getID(self):
         return "Ship"
     def semishoot(self):
-        from main import objects,bullet
+        from main import objects,bullet, shootsfx
         if self.cooldown() is not None:
             bulletobject = Bullet(bullet, (self.shiprect.midtop[0]+10, self.shiprect.midtop[1]), 22.5, 1)
             objects.append(bulletobject)
+            pygame.mixer.Sound.set_volume(shootsfx, 0.2)
+            shootsfx.play()
     def shoot(self):
-        from main import objects, bullet
+        from main import objects, bullet, shootsfx
         bulletobject = Bullet(bullet, (self.shiprect.midtop[0] + 10, self.shiprect.midtop[1]), 22.5, 1)
         objects.append(bulletobject)
+        pygame.mixer.Sound.set_volume(shootsfx, 0.2)
+        shootsfx.play()
 
     def heal(self, healvalue):
+        import main
+        pygame.mixer.Sound.set_volume(main.healsfx, 0.2)
+        main.healsfx.play()
         self.health += healvalue
         if self.health > self.maxhealth:
             self.health = self.maxhealth
         self.checktexture()
     def Harddamage(self, harddamage):
+        import main
         self.maxhealth -= harddamage
+        pygame.mixer.Sound.set_volume(main.damagesfx, 0.2)
+        main.damagesfx.play()
         if self.maxhealth < self.health:
             self.health = self.maxhealth
         self.checktexture()
         if self.health <= 0:
             import main
+            main.explosion = pygame.transform.scale(main.explosion, (100,100))
+            death = Explosion((self.shiprect.x, self.shiprect.y), main.explosion)
+            main.objects.append(death)
+            pygame.mixer.Sound.set_volume(main.boomsfx, 0.6)
+            main.boomsfx.play()
             main.objects.remove(self)
     def gethealth(self):
         return self.health
@@ -151,14 +179,19 @@ class ShipObject(Gameobject, damagable):
         return self.energyvalue
 
     def charge(self, chargevalue):
+        from main import chargesfx
         self.energyvalue += chargevalue
+        pygame.mixer.Sound.set_volume(chargesfx, 0.2)
+        chargesfx.play()
         if self.energyvalue > 5:
             self.energyvalue = 5
 
     def releasesuperbullet(self):
         import main
-        superbulletobject = Superbullet(main.superbullettexture, (self.shiprect.midtop[0]+5, self.shiprect.midtop[1]),  25.0, 3, 3)
+        superbulletobject = Superbullet(main.superbullettexture, (self.shiprect.midtop[0], self.shiprect.midtop[1]),  25.0, 2, 3)
         main.objects.append(superbulletobject)
+        pygame.mixer.Sound.set_volume(main.superbulletsfx, 0.1)
+        main.superbulletsfx.play()
 
     def energydrain(self):
         self.dt += 1
@@ -172,17 +205,20 @@ class ShipObject(Gameobject, damagable):
             self.cdcount = 0
             return 1
 
+    def getposition(self):
+        return (self.shiprect.x, self.shiprect.y)
+
 
     def laser(self):
         import main
         self.spaceship = main.spaceshiplaserlow
-        laserobject = Laser(main.lasertexture, (self.shiprect.midtop[0]+15, self.shiprect.midtop[1]+8),  20.0, 0.15, 'up')
+        laserobject = Laser(main.lasertexture, (self.shiprect.midtop[0]+15, self.shiprect.midtop[1]),  20.0, 0.25, 'up')
         main.objects.append(laserobject)
         if self.energyvalue >= 3:
             self.spaceship = main.spaceshiplaserhigh
-            laserobjectright = Laser(pygame.transform.rotate(main.lasertexture,90), (self.shiprect.midright[0]-10, self.shiprect.midright[1]-3), 20.0, 0.2,
+            laserobjectright = Laser(pygame.transform.rotate(main.lasertexture,90), (self.shiprect.midright[0]+30, self.shiprect.midright[1]-3), 20.0, 0.25,
                                 'right')
-            laserobjectleft = Laser(pygame.transform.rotate(main.lasertexture,270), (self.shiprect.midleft[0]+30, self.shiprect.midleft[1]-3), 20.0, 0.4,
+            laserobjectleft = Laser(pygame.transform.rotate(main.lasertexture,270), (self.shiprect.midleft[0]+30, self.shiprect.midleft[1]-3), 20.0, 0.25,
                                 'left')
             main.objects.append(laserobjectright)
             main.objects.append(laserobjectleft)
@@ -190,6 +226,7 @@ class ShipObject(Gameobject, damagable):
             self.energyvalue -= 1
         if self.energyvalue == 0:
             self.checktexture()
+
     def energycheat(self):
         self.energyvalue = 5
 

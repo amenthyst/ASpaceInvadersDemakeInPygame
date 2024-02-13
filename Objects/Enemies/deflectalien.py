@@ -4,6 +4,8 @@ from Objects.Enemies.deflectbullet import Deflectbullet
 import random
 from Objects.Powerups.heart import Heart
 from Objects.Powerups.energy import Energy
+from Objects.Enemies.explosion import Explosion
+import pygame
 class Deflectalien(Gameobject, damagable):
     def __init__(self, deflectalientexture, position: tuple, health: float, speed: float, attackvalue: int):
         self.deflectalien = deflectalientexture
@@ -28,9 +30,12 @@ class Deflectalien(Gameobject, damagable):
         self.deflect()
         self.health -= damage
         if self.health <= 0:
+
             import main
+            pygame.mixer.Sound.set_volume(main.boomsfx, 0.05)
+            main.boomsfx.play()
             if self.heartchance == 1:
-                heart = Heart(main.hearttexture, (self.deflectalienrect.x, self.deflectalienrect.y), 5.0, 20)
+                heart = Heart(main.hearttexture, (self.deflectalienrect.x, self.deflectalienrect.y), 5.0, 25)
                 main.objects.append(heart)
             if self.energychance == 1:
                 energy = Energy(main.energytexture, (self.deflectalienrect.x, self.deflectalienrect.y), 5.0)
@@ -40,6 +45,9 @@ class Deflectalien(Gameobject, damagable):
                     if gameobject.getrect().colliderect(self.deflectalienrect):
                         deflectbullet = Deflectbullet(main.deflectbullettexture, (self.deflectalienrect.x, self.deflectalienrect.y), 20.0, 25)
                         main.objects.append(deflectbullet)
+            death = Explosion((self.deflectalienrect.x, self.deflectalienrect.y + 50), main.explosion)
+            main.objects.append(death)
+
             main.objects.remove(self)
     def getID(self):
         return "Deflectalien"
@@ -52,7 +60,7 @@ class Deflectalien(Gameobject, damagable):
                 main.objects[0].damage(self.attackvalue)
                 main.objects.remove(self)
             elif gameobject.getrect().colliderect(self.deflectalienrect) and gameobject.getID() == "Dangerzone":
-                main.objects[2].damage(self.attackvalue//4)
+                main.objects[2].damage(self.attackvalue//3)
                 try:
                     main.objects.remove(self)
                 except ValueError:

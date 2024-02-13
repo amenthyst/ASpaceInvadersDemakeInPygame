@@ -1,5 +1,4 @@
 from Objects.gameobject import Gameobject
-import pygame
 from Otherscripts import damagable
 
 class Superbullet(Gameobject):

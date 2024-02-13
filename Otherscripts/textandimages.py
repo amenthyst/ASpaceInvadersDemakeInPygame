@@ -25,14 +25,18 @@ def rendergraphics():
     superbullettexture = pygame.image.load("Graphics/bullets/superbullet.png").convert_alpha()
     superbullettexture = pygame.transform.scale(superbullettexture, (30,120))
     lasertexture = pygame.image.load("Graphics/bullets/laser.png").convert_alpha()
-    lasertexture = pygame.transform.scale(lasertexture, (30,20))
-    return spaceshiphigh, spaceshipmid, spaceshiplow, spaceshiplaserlow, spaceshiplaserhigh, bullet, deflectedbullettexture, dangerzone, superbullettexture, lasertexture
+    lasertexture = pygame.transform.scale(lasertexture, (30,60))
+    explosion = pygame.image.load("Graphics/explosion.png").convert_alpha()
+    explosion = pygame.transform.scale(explosion, (60,60))
+    return spaceshiphigh, spaceshipmid, spaceshiplow, spaceshiplaserlow, spaceshiplaserhigh, bullet, deflectedbullettexture, dangerzone, superbullettexture, lasertexture, explosion
 def renderenemies():
     alientexture = pygame.image.load("Graphics/enemies/alien.png").convert_alpha()
     alientexture = pygame.transform.scale(alientexture, (40,40))
     deflectalientexture = pygame.image.load("Graphics/enemies/deflectalien.png").convert_alpha()
     deflectalientexture = pygame.transform.scale(deflectalientexture, (50,50))
-    return alientexture, deflectalientexture
+    enemyshiptexture = pygame.image.load("Graphics/enemies/enemyship.png").convert_alpha()
+    enemyshiptexture = pygame.transform.scale(enemyshiptexture, (50,50))
+    return alientexture, deflectalientexture, enemyshiptexture
 def renderpowerups():
     hearttexture = pygame.image.load("Graphics/powerups/heart.png").convert_alpha()
     hearttexture = pygame.transform.scale(hearttexture,(30,30))
