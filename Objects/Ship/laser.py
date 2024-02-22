@@ -40,12 +40,10 @@ class Laser(Gameobject):
 
         def attack(self):
             import main
-            for gameobject in main.objects:
-                if gameobject == self or gameobject == main.objects[0]:
-                    continue
-                if gameobject.getrect().colliderect(self.laserrect):
-                    if isinstance(gameobject, damagable):
-                        gameobject.damage(self.damage)
+            for enemy in main.enemies:
+                if enemy.getrect().colliderect(self.laserrect):
+                    if isinstance(enemy, damagable):
+                        enemy.damage(self.damage)
                         try:
                             main.objects.remove(self)
                         except ValueError:

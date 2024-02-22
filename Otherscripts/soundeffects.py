@@ -1,5 +1,5 @@
 import pygame
-pygame.mixer.init()
+
 def sfx():
     shootsfx = pygame.mixer.Sound("SFXandmusic/shootsfx.wav")
     superbulletsfx = pygame.mixer.Sound("SFXandmusic/superbulletsfx.wav")

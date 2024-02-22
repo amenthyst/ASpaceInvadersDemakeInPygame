@@ -49,3 +49,7 @@ class HealthBar(Gameobject):
         return self.heartrect
     def getID(self):
         return "Healthbar"
+    def addscore(self, score):
+        pass
+    def getscore(self):
+        pass

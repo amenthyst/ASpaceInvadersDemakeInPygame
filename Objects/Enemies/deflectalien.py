@@ -7,12 +7,13 @@ from Objects.Powerups.energy import Energy
 from Objects.Enemies.explosion import Explosion
 import pygame
 class Deflectalien(Gameobject, damagable):
-    def __init__(self, deflectalientexture, position: tuple, health: float, speed: float, attackvalue: int):
+    def __init__(self, deflectalientexture, position: tuple, health: float, speed: float, attackvalue: int, score: int):
         self.deflectalien = deflectalientexture
         self.position = position
         self.health = health
         self.speed = speed
         self.attackvalue = attackvalue
+        self.score = score
         self.deflectalienrect = self.deflectalien.get_rect(center = self.position)
         self.heartchance = random.randint(1,5)
         self.energychance = random.randint(1,5)
@@ -22,9 +23,9 @@ class Deflectalien(Gameobject, damagable):
         screen.blit(self.deflectalien, self.deflectalienrect)
     def move(self):
         self.deflectalienrect.y += self.speed
-        if self.deflectalienrect.y >= 800:
+        if self.deflectalienrect.y > 800:
             import main
-            main.objects.remove(self)
+            main.enemies.remove(self)
 
     def damage(self, damage):
         self.deflect()
@@ -34,6 +35,7 @@ class Deflectalien(Gameobject, damagable):
             import main
             pygame.mixer.Sound.set_volume(main.boomsfx, 0.05)
             main.boomsfx.play()
+            main.objects[0].addscore(3)
             if self.heartchance == 1:
                 heart = Heart(main.hearttexture, (self.deflectalienrect.x, self.deflectalienrect.y), 5.0, 25)
                 main.objects.append(heart)
@@ -48,21 +50,22 @@ class Deflectalien(Gameobject, damagable):
             death = Explosion((self.deflectalienrect.x, self.deflectalienrect.y + 50), main.explosion)
             main.objects.append(death)
 
-            main.objects.remove(self)
+            main.enemies.remove(self)
     def getID(self):
         return "Deflectalien"
     def attack(self):
         import main
         for gameobject in main.objects:
-            if gameobject == self:
-                continue
             if gameobject.getrect().colliderect(self.deflectalienrect) and gameobject.getID() == 'Ship':
                 main.objects[0].damage(self.attackvalue)
-                main.objects.remove(self)
+                try:
+                    main.enemies.remove(self)
+                except ValueError:
+                    continue
             elif gameobject.getrect().colliderect(self.deflectalienrect) and gameobject.getID() == "Dangerzone":
                 main.objects[2].damage(self.attackvalue//3)
                 try:
-                    main.objects.remove(self)
+                    main.enemies.remove(self)
                 except ValueError:
                     continue
 

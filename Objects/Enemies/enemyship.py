@@ -7,12 +7,13 @@ from Objects.Enemies.explosion import Explosion
 import random
 import pygame
 class Enemyship(Gameobject, damagable):
-    def __init__(self, enemyshiptexture, position: tuple, attackvalue, speed: float, health: float):
+    def __init__(self, enemyshiptexture, position: tuple, attackvalue, speed: float, health: float, score: int):
         self.enemyship = enemyshiptexture
         self.position = position
         self.attackvalue = attackvalue
         self.speed = speed
         self.health = health
+        self.score = score
         self.enemyshiprect = self.enemyship.get_rect(center=self.position)
         self.heartchance = random.randint(1,2)
         self.energychance = random.randint(1,2)
@@ -25,6 +26,9 @@ class Enemyship(Gameobject, damagable):
 
     def display(self, screen):
         screen.blit(self.enemyship, self.enemyshiprect)
+        if self.enemyshiprect.y > 700:
+            import main
+            main.enemies.remove(self)
 
     def move(self):
         if self.enemyshiprect.y > 50:
@@ -43,7 +47,7 @@ class Enemyship(Gameobject, damagable):
     def shoot(self):
         import main
         if self.cooldown() is not None:
-            shipbullet = Deflectbullet(pygame.transform.scale(main.deflectbullettexture,(30,30)), (self.enemyshiprect.x, self.enemyshiprect.y), 15, 10)
+            shipbullet = Deflectbullet(pygame.transform.scale(main.deflectbullettexture,(30,30)), (self.enemyshiprect.x, self.enemyshiprect.y), 10, 10)
             main.objects.append(shipbullet)
             pygame.mixer.Sound.set_volume(main.shootsfx, 0.1)
             main.shootsfx.play()
@@ -70,6 +74,7 @@ class Enemyship(Gameobject, damagable):
             import main
             pygame.mixer.Sound.set_volume(main.boomsfx, 0.05)
             main.boomsfx.play()
+            main.objects[0].addscore(10)
             if self.heartchance == 1:
                 heart = Heart(main.hearttexture, (self.enemyshiprect.x, self.enemyshiprect.y), 5.0, 25)
                 main.objects.append(heart)
@@ -79,7 +84,7 @@ class Enemyship(Gameobject, damagable):
             death = Explosion((self.enemyshiprect.x, self.enemyshiprect.y+50), main.explosion)
             main.objects.append(death)
 
-            main.objects.remove(self)
+            main.enemies.remove(self)
     def attack(self):
         import main
         for gameobject in main.objects:
@@ -87,7 +92,13 @@ class Enemyship(Gameobject, damagable):
                 continue
             if gameobject.getrect().colliderect(self.enemyshiprect) and gameobject.getID() == "Ship":
                 main.objects[0].damage(self.attackvalue)
-                main.objects.remove(self)
+                try:
+                    main.enemies.remove(self)
+                except ValueError:
+                    continue
             elif gameobject.getrect().colliderect(self.enemyshiprect) and gameobject.getID() == "Dangerzone":
                 main.objects[2].damage(self.attackvalue)
-                main.objects.remove(self)
+                try:
+                    main.enemies.remove(self)
+                except ValueError:
+                    continue

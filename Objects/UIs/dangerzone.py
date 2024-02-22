@@ -14,6 +14,7 @@ class Dangerzone(Gameobject, damagable):
         return "Dangerzone"
     def damage(self, damage):
         import main
+        main.objects[0].addscore(-damage*4)
         main.objects[0].Harddamage(damage)
     def checkdeath(self):
         import main

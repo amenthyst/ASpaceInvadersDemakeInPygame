@@ -18,12 +18,10 @@ class Superbullet(Gameobject):
             main.objects.remove(self)
     def attack(self):
         import main
-        for gameobject in main.objects:
-            if gameobject == self or gameobject == main.objects[0]:
-                continue
-            if gameobject.getrect().colliderect(self.superbulletrect):
-                if isinstance(gameobject, damagable.damagable):
-                    gameobject.damage(self.damage)
+        for enemy in main.enemies:
+            if enemy.getrect().colliderect(self.superbulletrect):
+                if isinstance(enemy, damagable.damagable):
+                    enemy.damage(self.damage)
                     self.piercing -= 1
                 if self.piercing == 0:
                     try:
