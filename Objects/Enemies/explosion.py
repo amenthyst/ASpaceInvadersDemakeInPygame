@@ -6,7 +6,7 @@ class Explosion(Gameobject):
         self.explosion = explosion
         self.explosionrect = self.explosion.get_rect(center=self.position)
         self.dt = 0
-    def display(self, screen):
+    def draw(self, screen):
         screen.blit(self.explosion, self.explosionrect)
 
     def getrect(self):

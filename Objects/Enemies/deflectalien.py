@@ -19,7 +19,7 @@ class Deflectalien(Gameobject, damagable):
         self.energychance = random.randint(1,5)
     def getrect(self):
         return self.deflectalienrect
-    def display(self, screen):
+    def draw(self, screen):
         screen.blit(self.deflectalien, self.deflectalienrect)
     def move(self):
         self.deflectalienrect.y += self.speed
@@ -45,7 +45,7 @@ class Deflectalien(Gameobject, damagable):
             for gameobject in main.objects:
                 if gameobject.getID() == 'Laser':
                     if gameobject.getrect().colliderect(self.deflectalienrect):
-                        deflectbullet = Deflectbullet(main.deflectbullettexture, (self.deflectalienrect.x, self.deflectalienrect.y), 20.0, 25)
+                        deflectbullet = Deflectbullet(main.deflectbullettexture, (self.deflectalienrect.x, self.deflectalienrect.y), 20.0, 25, "down")
                         main.objects.append(deflectbullet)
             death = Explosion((self.deflectalienrect.x, self.deflectalienrect.y + 50), main.explosion)
             main.objects.append(death)
@@ -75,11 +75,11 @@ class Deflectalien(Gameobject, damagable):
        for gameobject in objects:
             if gameobject.getID() == "Bullet":
                 if gameobject.getrect().colliderect(self.deflectalienrect):
-                    deflectbullet = Deflectbullet(deflectbullettexture, (self.deflectalienrect.x, self.deflectalienrect.y), 20.0, 25)
+                    deflectbullet = Deflectbullet(deflectbullettexture, (self.deflectalienrect.x, self.deflectalienrect.y), 20.0, 25, "down")
                     objects.append(deflectbullet)
             elif gameobject.getID() == "Superbullet":
                 if gameobject.getrect().colliderect(self.deflectalienrect):
-                    deflectbullet = Deflectbullet(deflectbullettexture, (self.deflectalienrect.x, self.deflectalienrect.y), 20.0, 25)
+                    deflectbullet = Deflectbullet(deflectbullettexture, (self.deflectalienrect.x, self.deflectalienrect.y), 20.0, 25, "down")
                     objects.append(deflectbullet)
 
 

@@ -36,7 +36,9 @@ def renderenemies():
     deflectalientexture = pygame.transform.scale(deflectalientexture, (50,50))
     enemyshiptexture = pygame.image.load("Graphics/enemies/enemyship.png").convert_alpha()
     enemyshiptexture = pygame.transform.scale(enemyshiptexture, (50,50))
-    return alientexture, deflectalientexture, enemyshiptexture
+    bosstexture = pygame.image.load("Graphics/enemies/boss.png").convert_alpha()
+    bosstexture = pygame.transform.scale(bosstexture, (60,60))
+    return alientexture, deflectalientexture, enemyshiptexture, bosstexture
 def renderpowerups():
     hearttexture = pygame.image.load("Graphics/powerups/heart.png").convert_alpha()
     hearttexture = pygame.transform.scale(hearttexture,(30,30))

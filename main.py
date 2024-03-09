@@ -8,19 +8,21 @@ from Objects.UIs.healthbar import HealthBar
 from Objects.UIs.energybar import Energybar
 from Objects.UIs.dangerzone import Dangerzone
 from Objects.UIs.scoreboard import Scoreboard
+from Objects.Enemies.boss import Boss
 from Otherscripts import soundeffects
-from Objects.wavecounter import Wavecounter
+from Objects.UIs.wavecounter import Wavecounter
 
 pygame.init()
 pygame.font.init()
 pygame.mixer.init()
 screen = pygame.display.set_mode((600,600))
+borderrect = pygame.Rect(0, 0, 600,600)
 pygame.display.set_caption("Programming Project")
 clock = pygame.time.Clock()
 
 background = textandimages.renderbackground()
 spaceshiphigh, spaceshipmid, spaceshiplow, spaceshiplaserlow, spaceshiplaserhigh, bullet, deflectbullettexture, dangerzone, superbullettexture, lasertexture, explosion = textandimages.rendergraphics()
-alientexture, deflectalientexture, enemyshiptexture = textandimages.renderenemies()
+alientexture, deflectalientexture, enemyshiptexture, bosstexture = textandimages.renderenemies()
 hearttexture, energytexture = textandimages.renderpowerups()
 shootsfx, superbulletsfx, lasersfx, boomsfx, chargesfx, damagesfx, healsfx = soundeffects.sfx()
 
@@ -31,8 +33,11 @@ objects = [ShipObject(spaceshiphigh, spaceshipmid, spaceshiplow, (300,550), 8, 1
            Dangerzone(dangerzone, (0,580)),
            Energybar(5,energytexture),
            Scoreboard(),
-           Wavecounter(5)]
-enemies = []
+           Wavecounter(0)]
+
+
+
+enemies = [Boss(bosstexture, (300,200), 50,3.0, 100, 1)]
 
 
 while True:
@@ -57,12 +62,12 @@ while True:
 
     # displays every object in the list objects
     for gameobject in objects:
-        gameobject.display(screen)
+        gameobject.draw(screen)
 
 
     # displays every enemy in the list enemies
     for enemy in enemies:
-        enemy.display(screen)
+        enemy.draw(screen)
 
 
 

@@ -29,7 +29,7 @@ class Wavecounter:
                 if self.currentwave > 2:
                     main.objects[0].addscore(20*self.currentwave/2)
 
-    def display(self, screen):
+    def draw(self, screen):
         import main
         # draws the wave counter
         self.textsurface = main.font.render(f"WAVE: {self.currentwave-1}", False, "white")

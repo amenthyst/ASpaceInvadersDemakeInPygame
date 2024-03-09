@@ -10,7 +10,7 @@ class Laser(Gameobject):
             self.direction = direction
             self.laserrect = self.lasertexture.get_rect(midright=self.position)
 
-        def display(self, screen):
+        def draw(self, screen):
             screen.blit(self.lasertexture, self.laserrect)
 
         def move(self):

@@ -16,7 +16,7 @@ class Energy(Gameobject):
         return self.energyrect
     def getID(self):
         return "Energy"
-    def display(self, screen):
+    def draw(self, screen):
         screen.blit(self.energytexture, self.energyrect)
     def charge(self):
         from main import objects

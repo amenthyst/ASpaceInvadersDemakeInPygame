@@ -16,7 +16,7 @@ class Heart(Gameobject):
         return "Heart"
     def getrect(self):
         return self.heartrect
-    def display(self, screen):
+    def draw(self, screen):
         screen.blit(self.hearttexture, self.heartrect)
     def heal(self):
         from main import objects

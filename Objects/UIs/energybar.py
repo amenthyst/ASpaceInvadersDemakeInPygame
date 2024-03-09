@@ -6,7 +6,7 @@ class Energybar(Gameobject):
         self.energynew = pygame.transform.scale(energytexture, (45,45))
         self.maxenergy = maxenergy
         self.energyrect = self.energynew.get_rect(center=(425,555))
-    def display(self, screen):
+    def draw(self, screen):
 
         import main
         for gameobject in main.objects:

@@ -21,7 +21,7 @@ class Alien(Gameobject, damagable):
 
     def getrect(self):
         return self.alienrect
-    def display(self, screen):
+    def draw(self, screen):
 
         screen.blit(self.alien, self.alienrect)
 

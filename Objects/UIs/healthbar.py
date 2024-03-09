@@ -2,13 +2,14 @@ from Objects.gameobject import Gameobject
 import pygame
 
 
-class HealthBar(Gameobject):
+class HealthBar(Gameobject, pygame.sprite.Sprite):
     def __init__(self, max_health: int, hearttexture):
+        pygame.sprite.Sprite.__init__(self)
         self.max_health = max_health
         self.hearttexture = hearttexture
         self.hearttexturenew = pygame.transform.scale(self.hearttexture,(35,35))
         self.heartrect = self.hearttexturenew.get_rect(center=(45,560))
-    def display(self, screen):
+    def draw(self, screen):
         import main
         for gameobject in main.objects:
             if gameobject.getID() == 'Ship':
@@ -52,4 +53,7 @@ class HealthBar(Gameobject):
     def addscore(self, score):
         pass
     def getscore(self):
+        pass
+
+    def getposition(self):
         pass

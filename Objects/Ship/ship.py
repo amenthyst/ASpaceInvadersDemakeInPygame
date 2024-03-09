@@ -14,14 +14,14 @@ class ShipObject(Gameobject, damagable):
         self.spaceshiphigh = spaceshiphigh
         self.spaceshipmid = spaceshipmid
         self.spaceshiplow = spaceshiplow
-        self.position = position
         self.speed = speed
         self.health = health
         self.maxhealth = maxhealth
         self.energyvalue = energyvalue
         self.bulletcooldown = bulletcooldown
         self.spaceship = spaceshiphigh
-        self.shiprect = self.spaceship.get_rect(midbottom=self.position)
+        self.shiprect = self.spaceship.get_rect(midbottom=position)
+
         self.bulletlastframe = False
         self.superbulletlastframe = False
         self.switchlastframe = False
@@ -31,39 +31,50 @@ class ShipObject(Gameobject, damagable):
         self.semiflag = False
         self.currentmode = 'MANUAL'
         self.score = 0
+        # dictionary that stores vectors for each control
+        self.CONTROLS = {
+            pygame.K_UP: (0, -1),
+            pygame.K_DOWN: (0, 1),
+            pygame.K_LEFT: (-1, 0),
+            pygame.K_RIGHT: (1, 0)
+        }
 
-    def display(self, screen):
+    def draw(self, screen):
         import main
         screen.blit(self.spaceship, self.shiprect)
         self.switchdisplay = main.font.render(self.currentmode, False, 'black')
         screen.blit(self.switchdisplay, (240, 550))
 
+
     def move(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            self.shiprect.x -= self.speed
-            # clamps it to the screen: prevents from going left
-            if self.shiprect.left <= 0:
-                self.shiprect.x += self.speed
+
+        # let's see which keys are pressed, and create a
+        # movement vector from all pressed keys.
+        self.playerdir = pygame.math.Vector2()
+        pressed = pygame.key.get_pressed()
+
+        for vec in (self.CONTROLS[k] for k in self.CONTROLS if pressed[k]):
+            self.playerdir += vec
 
 
-        elif keys[pygame.K_RIGHT]:
-            self.shiprect.x += self.speed
-            # clamps it to the screen: prevents from going right
-            if self.shiprect.right >= 600:
-                self.shiprect.x -= self.speed
+        # checks if the vector is 0 if it isn't then normalize it (reduce it in the range of -1 and 1)
+        if self.playerdir.length():
+            self.playerdir.normalize_ip()
+
+        self.playerdir *= self.speed
+
+     
+        # clamps the ship to the screen
+        if self.shiprect.x <= 0 or self.shiprect.x >= 600:
+            self.shiprect.x -= self.playerdir[0]
+        else:
+            self.shiprect.x += self.playerdir[0]
+        if self.shiprect.y <= 0 or self.shiprect.y >= 600:
+            self.shiprect.y -= self.playerdir[1]
+        else:
+            self.shiprect.y += self.playerdir[1]
 
 
-        elif keys[pygame.K_DOWN]:
-            self.shiprect.y += self.speed
-            if self.shiprect.y > 500:
-                self.shiprect.y -= self.speed
-
-
-        elif keys[pygame.K_UP]:
-            self.shiprect.y -= self.speed
-            if self.shiprect.y < 0:
-                self.shiprect.y += self.speed
 
     def getrect(self):
         return self.shiprect
@@ -93,8 +104,8 @@ class ShipObject(Gameobject, damagable):
             self.energyvalue -= 1
         self.superbulletlastframe = keys[pygame.K_r]
 
-        # if keys[pygame.K_t]:
-        # self.energycheat()
+        if keys[pygame.K_t]:
+            self.energycheat()
 
         if keys[pygame.K_e] and self.energyvalue > 0:
             self.laser()
@@ -103,7 +114,6 @@ class ShipObject(Gameobject, damagable):
         else:
             main.lasersfx.stop()
 
-        self.checktexture()
 
     def damage(self, damage):
         import main

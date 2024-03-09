@@ -3,7 +3,7 @@ from Objects.gameobject import Gameobject
 class Scoreboard(Gameobject):
 
 
-    def display(self, screen):
+    def draw(self, screen):
         from main import objects, font
 
         self.score = objects[0].getscore()

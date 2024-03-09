@@ -10,7 +10,7 @@ class Bullet(Gameobject):
         self.speed = speed
         self.damage = damage
         self.bulletrect = self.bullet.get_rect(midright=self.position)
-    def display(self, screen):
+    def draw(self, screen):
         screen.blit(self.bullet, self.bulletrect)
     def move(self):
         import main

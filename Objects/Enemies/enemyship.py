@@ -24,7 +24,7 @@ class Enemyship(Gameobject, damagable):
     def getID(self):
         return "Enemyship"
 
-    def display(self, screen):
+    def draw(self, screen):
         screen.blit(self.enemyship, self.enemyshiprect)
         if self.enemyshiprect.y > 700:
             import main
@@ -47,7 +47,7 @@ class Enemyship(Gameobject, damagable):
     def shoot(self):
         import main
         if self.cooldown() is not None:
-            shipbullet = Deflectbullet(pygame.transform.scale(main.deflectbullettexture,(30,30)), (self.enemyshiprect.x, self.enemyshiprect.y), 10, 10)
+            shipbullet = Deflectbullet(pygame.transform.scale(main.deflectbullettexture,(30,30)), (self.enemyshiprect.x, self.enemyshiprect.y), 10, 10, "down")
             main.objects.append(shipbullet)
             pygame.mixer.Sound.set_volume(main.shootsfx, 0.1)
             main.shootsfx.play()
@@ -65,9 +65,6 @@ class Enemyship(Gameobject, damagable):
             self.shoot()
         self.attack()
 
-    def shipstop(self):
-        self.lastspeed = self.speed
-        self.speed = 0
     def damage(self, damage):
         self.health -= damage
         if self.health <= 0:

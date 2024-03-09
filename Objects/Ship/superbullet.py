@@ -9,7 +9,7 @@ class Superbullet(Gameobject):
         self.damage = damage
         self.piercing = piercing
         self.superbulletrect = self.superbullettexture.get_rect(center=self.position)
-    def display(self, screen):
+    def draw(self, screen):
         screen.blit(self.superbullettexture, self.superbulletrect)
     def move(self):
         import main
