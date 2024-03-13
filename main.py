@@ -2,8 +2,6 @@ import pygame
 from sys import exit
 from Otherscripts import textandimages
 from Objects.Ship.ship import ShipObject
-from Objects.Enemies import enemypatterns
-from Objects.Enemies.enemyship import Enemyship
 from Objects.UIs.healthbar import HealthBar
 from Objects.UIs.energybar import Energybar
 from Objects.UIs.dangerzone import Dangerzone
@@ -16,7 +14,7 @@ pygame.init()
 pygame.font.init()
 pygame.mixer.init()
 screen = pygame.display.set_mode((600,600))
-borderrect = pygame.Rect(0, 0, 600,600)
+border = pygame.Rect(0, 0, 600, 580)
 pygame.display.set_caption("Programming Project")
 clock = pygame.time.Clock()
 
@@ -28,16 +26,28 @@ shootsfx, superbulletsfx, lasersfx, boomsfx, chargesfx, damagesfx, healsfx = sou
 
 font = pygame.font.Font('Graphics/joystix monospace.otf', 20)
 
-objects = [ShipObject(spaceshiphigh, spaceshipmid, spaceshiplow, (300,550), 8, 100, 100,0, 0.2),
+objects = [ShipObject(spaceshiphigh, spaceshipmid, spaceshiplow, (300,550), 8, 10, 100,0, 0.2),
            HealthBar(100, hearttexture),
            Dangerzone(dangerzone, (0,580)),
            Energybar(5,energytexture),
            Scoreboard(),
            Wavecounter(0)]
 
+ship = pygame.sprite.GroupSingle(ShipObject(spaceshiphigh, spaceshipmid, spaceshiplow, (300,550), 8, 100, 100,0, 0.2))
+shipobj = ship.sprites()[0]
 
+uigroup = pygame.sprite.Group(HealthBar(100, hearttexture),
+           Dangerzone(dangerzone, (0,580)),
+           Energybar(5,energytexture),
+           Scoreboard(),
+           Wavecounter(5))
 
-enemies = [Boss(bosstexture, (300,200), 50,3.0, 100, 1)]
+enemies = pygame.sprite.Group()
+#Boss(bosstexture, (300,200), 4,3.0, 100, 1)
+bullets = pygame.sprite.Group()
+
+powerups = pygame.sprite.Group()
+
 
 
 while True:
@@ -48,26 +58,28 @@ while True:
 
 
     # updates every object in the list objects
-    for gameobject in objects:
-        gameobject.update()
-
-
-    # updates every object in the list enemies
-    for enemy in enemies:
-        enemy.update()
+    ship.update()
+    uigroup.update()
+    enemies.update()
+    bullets.update()
+    powerups.update()
 
 
     screen.blit(background, (0,0))
 
 
     # displays every object in the list objects
-    for gameobject in objects:
-        gameobject.draw(screen)
 
-
-    # displays every enemy in the list enemies
-    for enemy in enemies:
-        enemy.draw(screen)
+    for object in ship.sprites():
+        object.draw(screen)
+    for object in uigroup.sprites():
+        object.draw(screen)
+    for object in enemies.sprites():
+        object.draw(screen)
+    for object in bullets.sprites():
+        bullets.draw(screen)
+    for object in powerups.sprites():
+        powerups.draw(screen)
 
 
 

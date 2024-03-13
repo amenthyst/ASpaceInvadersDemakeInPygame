@@ -37,11 +37,11 @@ def alienobject(numberofenemies, enemiesinrow):
     #
     for i in range(len(pattern)):
         if pattern[i][1] == 1:
-            main.enemies.append(Alien(main.alientexture, tuple(pattern[i][0]), 2, 0.6, 15, 2))
+            main.enemies.add(Alien(main.alientexture, tuple(pattern[i][0]), 1, 1.5, 15, 2))
         elif pattern[i][1] == 2:
-            main.enemies.append(Deflectalien(main.deflectalientexture, tuple(pattern[i][0]), 1, 0.8, 15, 2))
+            main.enemies.add(Deflectalien(main.deflectalientexture, tuple(pattern[i][0]), 1, 1.5, 15, 2))
         elif pattern[i][1] == 3:
-            main.enemies.append(Enemyship(main.enemyshiptexture, tuple(pattern[i][0]), 20, 3, 4, 2))
+            main.enemies.add(Enemyship(main.enemyshiptexture, tuple(pattern[i][0]), 20, 3, 3, 2))
 
 
 

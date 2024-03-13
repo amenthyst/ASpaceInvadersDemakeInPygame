@@ -1,37 +1,35 @@
 from Otherscripts import damagable
+import pygame
 
 
-from Objects.gameobject import Gameobject
-class Bullet(Gameobject):
+class Bullet(pygame.sprite.Sprite):
 
     def __init__(self, bullet, position: tuple, speed: float, damage: int):
-        self.bullet = bullet
+        pygame.sprite.Sprite.__init__(self)
+        self.image = bullet
         self.position = position
         self.speed = speed
         self.damage = damage
-        self.bulletrect = self.bullet.get_rect(midright=self.position)
+        self.rect = self.image.get_rect(midright=self.position)
     def draw(self, screen):
-        screen.blit(self.bullet, self.bulletrect)
+        screen.blit(self.image, self.rect)
     def move(self):
         import main
-        self.bulletrect.y -= self.speed
-        if self.bulletrect.y < -100:
-            main.objects.remove(self)
+        self.rect.y -= self.speed
+        if self.rect.y < -100:
+            self.kill()
     def getrect(self):
-        return self.bulletrect
+        return self.rect
     def getID(self):
         return "Bullet"
 
     def attack(self):
         import main
         for enemy in main.enemies:
-            if enemy.getrect().colliderect(self.bulletrect):
-                if isinstance(enemy, damagable.damagable):
-                    enemy.damage(self.damage)
-                    try:
-                        main.objects.remove(self)
-                    except ValueError:
-                        continue
+            if enemy.rect.colliderect(self.rect) and isinstance(enemy, damagable.damagable):
+                enemy.damage(self.damage)
+                self.kill()
+
     def update(self):
         self.move()
         self.attack()

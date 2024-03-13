@@ -1,7 +1,11 @@
-from Objects.Enemies import enemypatterns
 
-class Wavecounter:
+
+from Objects.Enemies import enemypatterns
+import pygame
+class Wavecounter(pygame.sprite.Sprite):
     def __init__(self, numberofwaves):
+        from main import font
+        pygame.sprite.Sprite.__init__(self)
         self.numberofwaves = numberofwaves+1
         self.dt = 0
         self.currentwave = 1
@@ -9,7 +13,8 @@ class Wavecounter:
         self.dtcolor = 0
         self.dt = 0
         self.colorindex = 0
-
+        self.image = font.render(f"WAVE: {self.currentwave-1}", False, "white")
+        self.rect = self.image.get_rect(center=(83,70))
 
     def wavecounter(self):
         # counter of 1 second
@@ -22,7 +27,7 @@ class Wavecounter:
     def checkwaves(self):
         # checking if there are no more enemies present then increments wave
         import main
-        if len(main.enemies) == 0 and self.currentwave < self.numberofwaves:
+        if len(main.enemies.sprites()) == 0 and self.currentwave < self.numberofwaves:
             if self.wavecounter() is not None:
                 enemypatterns.alienobject(int(30*self.currentwave//2.5), 5)
                 self.currentwave += 1
@@ -32,9 +37,8 @@ class Wavecounter:
     def draw(self, screen):
         import main
         # draws the wave counter
-        self.textsurface = main.font.render(f"WAVE: {self.currentwave-1}", False, "white")
-        self.textrect = self.textsurface.get_rect(center=(83,70))
-        screen.blit(self.textsurface, self.textrect)
+        self.image = main.font.render(f"WAVE: {self.currentwave - 1}", False, "white")
+        screen.blit(self.image, self.rect)
         if self.currentwave == self.numberofwaves:
             screen.blit(self.goaltext, (23,80))
 
@@ -45,7 +49,7 @@ class Wavecounter:
 
 
     def getrect(self):
-        return self.textrect
+        return self.rect
 
 
     def getID(self):

@@ -1,35 +1,33 @@
-from Objects.gameobject import Gameobject
-from Otherscripts import damagable
 
-class Superbullet(Gameobject):
+from Otherscripts import damagable
+import pygame
+class Superbullet(pygame.sprite.Sprite):
     def __init__(self, superbullettexture, position: tuple, speed: float, damage: int, piercing: int):
-        self.superbullettexture = superbullettexture
+        pygame.sprite.Sprite.__init__(self)
+        self.image = superbullettexture
         self.position = position
         self.speed = speed
         self.damage = damage
         self.piercing = piercing
-        self.superbulletrect = self.superbullettexture.get_rect(center=self.position)
+        self.rect = self.image.get_rect(center=self.position)
     def draw(self, screen):
-        screen.blit(self.superbullettexture, self.superbulletrect)
+        screen.blit(self.image, self.rect)
     def move(self):
         import main
-        self.superbulletrect.y -= self.speed
-        if self.superbulletrect.y < -100:
-            main.objects.remove(self)
+        self.rect.y -= self.speed
+        if self.rect.y < -100:
+            self.kill()
     def attack(self):
         import main
         for enemy in main.enemies:
-            if enemy.getrect().colliderect(self.superbulletrect):
-                if isinstance(enemy, damagable.damagable):
-                    enemy.damage(self.damage)
-                    self.piercing -= 1
-                if self.piercing == 0:
-                    try:
-                        main.objects.remove(self)
-                    except ValueError:
-                        continue
+            if enemy.getrect().colliderect(self.rect) and isinstance(enemy, damagable.damagable):
+                enemy.damage(self.damage)
+                self.piercing -= 1
+            if self.piercing == 0:
+                self.kill()
+
     def getrect(self):
-        return self.superbulletrect
+        return self.rect
     def getID(self):
         return "Superbullet"
 

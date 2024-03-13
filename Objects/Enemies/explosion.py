@@ -1,16 +1,17 @@
-from Objects.gameobject import Gameobject
+
 import pygame
-class Explosion(Gameobject):
+class Explosion(pygame.sprite.Sprite):
     def __init__(self, position:tuple, explosion):
+        pygame.sprite.Sprite.__init__(self)
         self.position = position
-        self.explosion = explosion
-        self.explosionrect = self.explosion.get_rect(center=self.position)
+        self.image = explosion
+        self.rect = self.image.get_rect(center=self.position)
         self.dt = 0
     def draw(self, screen):
-        screen.blit(self.explosion, self.explosionrect)
+        screen.blit(self.image, self.rect)
 
     def getrect(self):
-        return self.explosionrect
+        return self.rect
     def getID(self):
         return "Explosion"
 
@@ -20,6 +21,5 @@ class Explosion(Gameobject):
             self.dt = 0
             return 1
     def update(self):
-        import main
         if self.time() is not None:
-            main.objects.remove(self)
+            self.kill()

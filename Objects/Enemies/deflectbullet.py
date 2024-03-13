@@ -1,49 +1,46 @@
-from Objects.gameobject import Gameobject
 
-class Deflectbullet(Gameobject):
+import pygame
+class Deflectbullet(pygame.sprite.Sprite):
     def __init__(self, deflectbullettexture, position: tuple, speed: float, damage: int, direction):
-        self.deflectbullet = deflectbullettexture
+        pygame.sprite.Sprite.__init__(self)
+        self.image = deflectbullettexture
         self.position = position
         self.speed = speed
         self.damage = damage
         self.direction = direction
-        self.deflectbulletrect = self.deflectbullet.get_rect(center=self.position)
+        self.rect = self.image.get_rect(center=self.position)
+        self.CONTROLS = {
+            "up": (0, -1),
+            "down": (0, 1),
+            "left": (-1, 0),
+            "right": (1, 0)
+        }
     def draw(self, screen):
-        screen.blit(self.deflectbullet, self.deflectbulletrect)
+        screen.blit(self.image, self.rect)
     def move(self):
-        if self.direction == "down":
-            self.deflectbulletrect.y += self.speed
-            if self.deflectbulletrect.y < -100:
-                import main
-                main.objects.remove(self)
-        elif self.direction == "up":
-            self.deflectbulletrect.y -= self.speed
-            if self.deflectbulletrect.y > 700:
-                import main
-                main.objects.remove(self)
-        elif self.direction == "left":
-            self.deflectbulletrect.x -= self.speed
-            if self.deflectbulletrect.x < -100:
-                import main
-                main.objects.remove(self)
-        elif self.direction == "right":
-            self.deflectbulletrect.x += self.speed
-            if self.deflectbulletrect.x > 700:
-                import main
-                main.objects.remove(self)
+        self.bulletdir = pygame.math.Vector2()
+        self.bulletdir += self.CONTROLS[self.direction]
+
+        if self.bulletdir.length():
+            self.bulletdir.normalize_ip()
+
+        self.bulletdir *= self.speed
+
+        self.rect.x += self.bulletdir[0]
+        self.rect.y += self.bulletdir[1]
+
+        if self.rect.x < -50 or self.rect.x > 650 or self.rect.y < -50 or self.rect.y > 650:
+            self.kill()
 
     def getrect(self):
-        return self.deflectbulletrect
+        return self.rect
     def getID(self):
         return "Deflectbullet"
     def attack(self):
         import main
-        for gameobject in main.objects:
-            if gameobject == self:
-                continue
-            if gameobject.getrect().colliderect(self.deflectbulletrect) and gameobject.getID() == 'Ship':
-                gameobject.damage(self.damage)
-                main.objects.remove(self)
+        if main.shipobj.rect.colliderect(self.rect):
+            main.shipobj.damage(self.damage)
+            self.kill()
     def update(self):
         self.move()
         self.attack()

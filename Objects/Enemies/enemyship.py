@@ -1,4 +1,4 @@
-from Objects.gameobject import Gameobject
+
 from Objects.Enemies.deflectbullet import Deflectbullet
 from Otherscripts.damagable import damagable
 from Objects.Powerups.heart import Heart
@@ -6,49 +6,49 @@ from Objects.Powerups.energy import Energy
 from Objects.Enemies.explosion import Explosion
 import random
 import pygame
-class Enemyship(Gameobject, damagable):
+class Enemyship(pygame.sprite.Sprite, damagable):
     def __init__(self, enemyshiptexture, position: tuple, attackvalue, speed: float, health: float, score: int):
-        self.enemyship = enemyshiptexture
+        pygame.sprite.Sprite.__init__(self)
+        self.image = enemyshiptexture
         self.position = position
         self.attackvalue = attackvalue
         self.speed = speed
         self.health = health
         self.score = score
-        self.enemyshiprect = self.enemyship.get_rect(center=self.position)
+        self.rect = self.image.get_rect(center=self.position)
         self.heartchance = random.randint(1,2)
         self.energychance = random.randint(1,2)
         self.dt = 0
     def getrect(self):
-        return self.enemyshiprect
+        return self.rect
 
     def getID(self):
         return "Enemyship"
 
     def draw(self, screen):
-        screen.blit(self.enemyship, self.enemyshiprect)
-        if self.enemyshiprect.y > 700:
-            import main
-            main.enemies.remove(self)
+        screen.blit(self.image, self.rect)
+        if self.rect.y > 700:
+            self.kill()
 
     def move(self):
-        if self.enemyshiprect.y > 50:
-            self.enemyshiprect.x += self.speed
-            if self.enemyshiprect.x <= 0:
+        if self.rect.y > 50:
+            self.rect.x += self.speed
+            if self.rect.x <= 0:
                 self.speed = -self.speed
-                self.enemyshiprect.y += 50
-            elif self.enemyshiprect.x >= 550:
+                self.rect.y += 50
+            elif self.rect.x >= 550:
                 self.speed = -self.speed
-                self.enemyshiprect.y += 50
+                self.rect.y += 50
         else:
-            self.enemyshiprect.y += self.speed/4
+            self.rect.y += self.speed/4
 
 
 
     def shoot(self):
         import main
         if self.cooldown() is not None:
-            shipbullet = Deflectbullet(pygame.transform.scale(main.deflectbullettexture,(30,30)), (self.enemyshiprect.x, self.enemyshiprect.y), 10, 10, "down")
-            main.objects.append(shipbullet)
+            shipbullet = Deflectbullet(pygame.transform.scale(main.deflectbullettexture,(30,30)), (self.rect.x, self.rect.y), 10, 10, "down")
+            main.bullets.add(shipbullet)
             pygame.mixer.Sound.set_volume(main.shootsfx, 0.1)
             main.shootsfx.play()
 
@@ -61,7 +61,7 @@ class Enemyship(Gameobject, damagable):
 
     def update(self):
         self.move()
-        if self.enemyshiprect.y > 50:
+        if self.rect.y > 50:
             self.shoot()
         self.attack()
 
@@ -71,31 +71,21 @@ class Enemyship(Gameobject, damagable):
             import main
             pygame.mixer.Sound.set_volume(main.boomsfx, 0.05)
             main.boomsfx.play()
-            main.objects[0].addscore(10)
+            main.shipobj.addscore(10)
             if self.heartchance == 1:
-                heart = Heart(main.hearttexture, (self.enemyshiprect.x, self.enemyshiprect.y), 5.0, 25)
-                main.objects.append(heart)
+                heart = Heart(main.hearttexture, (self.rect.x, self.rect.y), 5.0, 25)
+                main.powerups.add(heart)
             if self.energychance == 1:
-                energy = Energy(main.energytexture, (self.enemyshiprect.x, self.enemyshiprect.y), 5.0)
-                main.objects.append(energy)
-            death = Explosion((self.enemyshiprect.x, self.enemyshiprect.y+50), main.explosion)
-            main.objects.append(death)
-
-            main.enemies.remove(self)
+                energy = Energy(main.energytexture, (self.rect.x, self.rect.y), 5.0)
+                main.powerups.add(energy)
+            death = Explosion((self.rect.x, self.rect.y+50), main.explosion)
+            main.enemies.add(death)
+            self.kill()
     def attack(self):
         import main
-        for gameobject in main.objects:
-            if gameobject == self:
-                continue
-            if gameobject.getrect().colliderect(self.enemyshiprect) and gameobject.getID() == "Ship":
-                main.objects[0].damage(self.attackvalue)
-                try:
-                    main.enemies.remove(self)
-                except ValueError:
-                    continue
-            elif gameobject.getrect().colliderect(self.enemyshiprect) and gameobject.getID() == "Dangerzone":
-                main.objects[2].damage(self.attackvalue)
-                try:
-                    main.enemies.remove(self)
-                except ValueError:
-                    continue
+        if main.shipobj.rect.colliderect(self.rect):
+            main.shipobj.damage(self.attackvalue)
+            self.kill()
+        elif main.uigroup.sprites()[1].rect.colliderect(self.rect):
+            main.uigroup.sprites()[1].damage(self.attackvalue//4)
+            self.kill()

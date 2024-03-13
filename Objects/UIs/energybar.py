@@ -1,17 +1,16 @@
-from Objects.gameobject import Gameobject
+
 import pygame
-class Energybar(Gameobject):
+class Energybar(pygame.sprite.Sprite):
     def __init__(self, maxenergy: int, energytexture):
-        self.energytexture = energytexture
-        self.energynew = pygame.transform.scale(energytexture, (45,45))
+        pygame.sprite.Sprite.__init__(self)
+        self.image = energytexture
+        self.energynew = pygame.transform.scale(self.image, (45,45))
         self.maxenergy = maxenergy
-        self.energyrect = self.energynew.get_rect(center=(425,555))
+        self.rect = self.energynew.get_rect(center=(425,555))
     def draw(self, screen):
 
         import main
-        for gameobject in main.objects:
-            if gameobject.getID() == 'Ship':
-                self.currentenergy = gameobject.getcharge()
+        self.currentenergy = main.shipobj.energyvalue
 
 
         ratio = self.currentenergy / self.maxenergy
@@ -20,19 +19,19 @@ class Energybar(Gameobject):
         self.textsurface = main.font.render(self.energytext, False, "black")
 
         pygame.draw.rect(screen, "black", (425,545,125,25),4)
-        if main.objects[0].getID() == 'Ship':
+        if len(main.ship.sprites()) != 0:
             pygame.draw.rect(screen,"yellow",(430,549,117*ratio,17))
         else:
             self.currentenergy = 0
 
         screen.blit(self.textsurface, (450,545))
-        screen.blit(self.energynew, self.energyrect)
+        screen.blit(self.energynew, self.rect)
 
 
     def update(self):
         pass
     def getrect(self):
-        return self.energyrect
+        return self.rect
     def getID(self):
         return "Energybar"
     def damage(self,damage):

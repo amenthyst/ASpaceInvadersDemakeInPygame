@@ -1,30 +1,28 @@
-from Objects.gameobject import Gameobject
+
 import pygame
 
-class Energy(Gameobject):
+class Energy(pygame.sprite.Sprite):
     def __init__(self, energytexture, position: tuple, speed: float):
-        self.energytexture = energytexture
+        pygame.sprite.Sprite.__init__(self)
+        self.image = energytexture
         self.position = position
         self.speed = speed
-        self.energyrect = self.energytexture.get_rect(center=self.position)
+        self.rect = self.image.get_rect(center=self.position)
     def move(self):
-        self.energyrect.y += self.speed
-        if self.energyrect.y < -100:
-            import main
-            main.objects.remove(self)
+        self.rect.y += self.speed
+        if self.rect.y < -100:
+            self.kill()
     def getrect(self):
-        return self.energyrect
+        return self.rect
     def getID(self):
         return "Energy"
     def draw(self, screen):
-        screen.blit(self.energytexture, self.energyrect)
+        screen.blit(self.image, self.rect)
     def charge(self):
-        from main import objects
-        for gameobject in objects:
-            if gameobject.getID() == 'Ship':
-                if gameobject.getrect().colliderect(self.energyrect):
-                    gameobject.charge(1)
-                    objects.remove(self)
+        from main import shipobj
+        if shipobj.rect.colliderect(self.rect):
+            shipobj.charge(1)
+            self.kill()
     def update(self):
         self.charge()
         self.move()
