@@ -4,7 +4,7 @@ from Otherscripts.damagable import damagable
 from Objects.Ship.superbullet import Superbullet
 from Objects.Ship.laser import Laser
 from Objects.Enemies.explosion import Explosion
-
+from Objects.Ship.missile import Missile
 
 class ShipObject(pygame.sprite.Sprite, damagable):
     def __init__(self, spaceshiphigh, spaceshipmid, spaceshiplow, position: tuple, speed: float, health: float,
@@ -24,6 +24,7 @@ class ShipObject(pygame.sprite.Sprite, damagable):
         self.rect = self.spaceship.get_rect(midbottom=position)
         self.bulletlastframe = False
         self.superbulletlastframe = False
+        self.missilelastframe = False
         self.switchlastframe = False
         self.dt = 0
         self.cdcount = 0
@@ -52,6 +53,7 @@ class ShipObject(pygame.sprite.Sprite, damagable):
         # let's see which keys are pressed, and create a
         # movement vector from all pressed keys.
         self.playerdir = pygame.math.Vector2()
+
         pressed = pygame.key.get_pressed()
 
         for vec in (self.CONTROLS[k] for k in self.CONTROLS if pressed[k]):
@@ -110,6 +112,10 @@ class ShipObject(pygame.sprite.Sprite, damagable):
             main.lasersfx.play()
         else:
             main.lasersfx.stop()
+
+        if keys[pygame.K_f] and self.missilelastframe == False and self.energyvalue > 0:
+            self.missile()
+        self.missilelastframe = keys[pygame.K_f]
 
 
     def damage(self, damage):
@@ -204,18 +210,18 @@ class ShipObject(pygame.sprite.Sprite, damagable):
     def laser(self):
         import main
         self.image = main.spaceshiplaserlow
-        laserobject = Laser(main.lasertexture, (self.rect.midtop[0] + 15, self.rect.midtop[1]), 20.0, 0.25,
+        laserobject = Laser(main.lasertexture, (self.rect.midtop[0] + 15, self.rect.midtop[1]), 20.0, 0.2,
                             'up')
         main.bullets.add(laserobject)
         if self.energyvalue >= 3:
             self.image = main.spaceshiplaserhigh
             laserobjectright = Laser(pygame.transform.rotate(main.lasertexture, 90),
-                                     (self.rect.midright[0] + 30, self.rect.midright[1] - 3), 20.0, 0.25,
+                                     (self.rect.midright[0] + 30, self.rect.midright[1] - 3), 20.0, 0.2,
                                      'right')
             laserobjectleft = Laser(pygame.transform.rotate(main.lasertexture, 270),
-                                    (self.rect.midleft[0] + 30, self.rect.midleft[1] - 3), 20.0, 0.25,
+                                    (self.rect.midleft[0] + 30, self.rect.midleft[1] - 3), 20.0, 0.2,
                                     'left')
-            laserobjectdown = Laser(main.lasertexture, (self.rect.midbottom[0] + 15, self.rect.midbottom[1]), 20.0, 0.25,
+            laserobjectdown = Laser(main.lasertexture, (self.rect.midbottom[0] + 15, self.rect.midbottom[1]), 20.0, 0.2,
                             'down')
             main.bullets.add(laserobjectright)
             main.bullets.add(laserobjectleft)
@@ -246,9 +252,17 @@ class ShipObject(pygame.sprite.Sprite, damagable):
         import main
         main.explosion = pygame.transform.scale(main.explosion, (100, 100))
         death = Explosion((self.rect.x, self.rect.y), main.explosion)
-        main.enemies.add(death)
+        main.explosions.add(death)
         pygame.mixer.Sound.set_volume(main.boomsfx, 0.5)
 
         main.boomsfx.play()
-        self.kill()
+        self.remove(main.ship)
         main.lasersfx.stop()
+
+    def missile(self):
+        from main import missiletexture, bullets, enemies
+        if len(enemies.sprites()) != 0:
+            for i in range(0,2):
+                self.missileobj = Missile(missiletexture, (self.rect.x+20, self.rect.y), 10, 1)
+                bullets.add(self.missileobj)
+            self.energyvalue -= 1

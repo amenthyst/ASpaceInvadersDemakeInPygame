@@ -19,6 +19,7 @@ class Alien(pygame.sprite.Sprite, damagable):
         self.heartchance = random.randint(1, 5)
         self.energychance = random.randint(1,3)
         self.dt = 0
+        self.marked = False
 
     def getrect(self):
         return self.rect
@@ -59,12 +60,12 @@ class Alien(pygame.sprite.Sprite, damagable):
         main.boomsfx.play()
         if self.heartchance == 1:
             heart = Heart(main.hearttexture, (self.rect.x, self.rect.y), 5.0, 25)
-            main.objects.append(heart)
+            main.powerups.add(heart)
         if self.energychance == 1:
             energy = Energy(main.energytexture, (self.rect.x, self.rect.y), 5.0)
-            main.objects.append(energy)
+            main.powerups.add(energy)
         death = Explosion((self.rect.x, self.rect.y + 50), main.explosion)
-        main.enemies.add(death)
+        main.explosions.add(death)
         main.shipobj.addscore(5)
         self.kill()
 

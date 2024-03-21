@@ -10,8 +10,6 @@ class Boss(pygame.sprite.Sprite, damagable):
     def __init__(self, bosstexture, position: tuple, health: float, speed: float, attackvalue: int, score: int):
         pygame.sprite.Sprite.__init__(self)
         self.image = bosstexture
-
-
         self.health = health
         self.speed = speed
         self.attackvalue = attackvalue
@@ -22,21 +20,22 @@ class Boss(pygame.sprite.Sprite, damagable):
 
         self.rect = self.image.get_rect(center=position)
         self.bulletcount = 0
+        self.marked = False
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
     def move(self):
         import main
-        self.ship = main.ship.sprites()
-        shippos = pygame.math.Vector2(self.ship[0].getposition())
-        self.position = pygame.math.Vector2(self.rect.x, self.rect.y)
-        playerdir = shippos - self.position
-        if playerdir.length():
-            playerdir.normalize_ip()
-        if self.stunflag == False:
-            self.rect.x += (playerdir * self.speed)[0]
-            self.rect.y += (playerdir * self.speed)[1]
+        if len(main.ship.sprites()) != 0:
+            shippos = pygame.math.Vector2(main.shipobj.getposition())
+            self.position = pygame.math.Vector2(self.rect.x, self.rect.y)
+            playerdir = shippos - self.position
+            if playerdir.length():
+                playerdir.normalize_ip()
+            if self.stunflag == False:
+                self.rect.x += (playerdir * self.speed)[0]
+                self.rect.y += (playerdir * self.speed)[1]
 
 
 
@@ -73,8 +72,8 @@ class Boss(pygame.sprite.Sprite, damagable):
             energy = Energy(main.energytexture, (self.rect.x, self.rect.y), 5.0)
             main.powerups.add(energy)
         death = Explosion((self.rect.x, self.rect.y + 50), main.explosion)
-        main.enemies.add(death)
-        main.ship.sprites()[0].addscore(50)
+        main.explosions.add(death)
+        main.shipobj.addscore(50)
         self.kill()
 
     def shoot(self):
@@ -84,16 +83,16 @@ class Boss(pygame.sprite.Sprite, damagable):
         if self.cooldown() is not None and self.stunflag == False:
             for i in range(3):
                 bossbullet = Deflectbullet(deflectbullettexture, (self.rect.x + i * 30, self.rect.y), 15.0, 5, "down")
-                main.objects.append(bossbullet)
+                main.bullets.add(bossbullet)
             for i in range(3):
                 bossbullet = Deflectbullet(pygame.transform.rotate(deflectbullettexture, 270), (self.rect.x, self.rect.y + i * 30 + 10), 15.0, 5, "left")
-                main.objects.append(bossbullet)
+                main.bullets.add(bossbullet)
             for i in range(3):
                 bossbullet = Deflectbullet(pygame.transform.rotate(deflectbullettexture, 90), (self.rect.x, self.rect.y + i * 30 + 10), 15.0, 5, "right")
-                main.objects.append(bossbullet)
+                main.bullets.add(bossbullet)
             for i in range(3):
                 bossbullet = Deflectbullet(pygame.transform.rotate(deflectbullettexture, 180), (self.rect.x + i * 30, self.rect.y), 15.0, 5, "up")
-                main.objects.append(bossbullet)
+                main.bullets.add(bossbullet)
             main.shootsfx.play()
 
     def update(self):

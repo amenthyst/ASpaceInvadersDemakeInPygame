@@ -19,6 +19,7 @@ class Enemyship(pygame.sprite.Sprite, damagable):
         self.heartchance = random.randint(1,2)
         self.energychance = random.randint(1,2)
         self.dt = 0
+        self.marked = False
     def getrect(self):
         return self.rect
 
@@ -79,7 +80,7 @@ class Enemyship(pygame.sprite.Sprite, damagable):
                 energy = Energy(main.energytexture, (self.rect.x, self.rect.y), 5.0)
                 main.powerups.add(energy)
             death = Explosion((self.rect.x, self.rect.y+50), main.explosion)
-            main.enemies.add(death)
+            main.explosions.add(death)
             self.kill()
     def attack(self):
         import main

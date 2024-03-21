@@ -7,7 +7,7 @@ from Objects.Powerups.energy import Energy
 from Objects.Enemies.explosion import Explosion
 import pygame
 class Deflectalien(pygame.sprite.Sprite, damagable):
-    def __init__(self, deflectalientexture, position: tuple, health: float, speed: float, attackvalue: int, score: int):
+    def __init__(self, deflectalientexture, position: tuple, health: float, speed: float, attackvalue: int, score: int, deflectbulletdamage: int):
         pygame.sprite.Sprite.__init__(self)
         self.image = deflectalientexture
         self.position = position
@@ -15,9 +15,11 @@ class Deflectalien(pygame.sprite.Sprite, damagable):
         self.speed = speed
         self.attackvalue = attackvalue
         self.score = score
+        self.deflectbulletdamage = deflectbulletdamage
         self.rect = self.image.get_rect(center = self.position)
         self.heartchance = random.randint(1,5)
         self.energychance = random.randint(1,5)
+        self.marked = False
     def getrect(self):
         return self.rect
     def draw(self, screen):
@@ -28,11 +30,10 @@ class Deflectalien(pygame.sprite.Sprite, damagable):
             self.kill()
 
     def damage(self, damage):
-        self.deflect()
         self.health -= damage
         if self.health <= 0:
-            self.deflect()
             self.death()
+        self.deflect()
 
     def getID(self):
         return "Deflectalien"
@@ -52,7 +53,7 @@ class Deflectalien(pygame.sprite.Sprite, damagable):
        for bullet in self.hitlist:
            if bullet.getID() == "Laser" and self.health > 0:
                continue
-           self.bullet = Deflectbullet(main.deflectbullettexture, (self.rect.x, self.rect.y), 15, 20, "down")
+           self.bullet = Deflectbullet(main.deflectbullettexture, (self.rect.x, self.rect.y), 15, self.deflectbulletdamage, "down")
            main.bullets.add(self.bullet)
 
     def update(self):
@@ -71,5 +72,6 @@ class Deflectalien(pygame.sprite.Sprite, damagable):
             energy = Energy(main.energytexture, (self.rect.x, self.rect.y), 5.0)
             main.powerups.add(energy)
         death = Explosion((self.rect.x, self.rect.y + 50), main.explosion)
-        main.enemies.add(death)
+        main.explosions.add(death)
         self.kill()
+

@@ -32,7 +32,7 @@ class Wavecounter(pygame.sprite.Sprite):
                 enemypatterns.alienobject(int(30*self.currentwave//2.5), 5)
                 self.currentwave += 1
                 if self.currentwave > 2:
-                    main.objects[0].addscore(20*self.currentwave/2)
+                    main.shipobj.addscore(20*self.currentwave/2)
 
     def draw(self, screen):
         import main

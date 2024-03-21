@@ -23,3 +23,4 @@ class Explosion(pygame.sprite.Sprite):
     def update(self):
         if self.time() is not None:
             self.kill()
+

@@ -12,7 +12,7 @@ Arrow keys to move
 
 ENEMIES:
 
-Green alien - 2 health, only damages by contact (20 damage)
+Green alien - 1 health, only damages by contact (20 damage)
 
 Red alien - 1 health, deals 20 damage by contact, when shot reflects the bullet back 
 and deals 25 damage. Very quick.

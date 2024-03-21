@@ -9,7 +9,9 @@ from Objects.UIs.scoreboard import Scoreboard
 from Objects.Enemies.boss import Boss
 from Otherscripts import soundeffects
 from Objects.UIs.wavecounter import Wavecounter
-
+from Objects.Enemies.deflectalien import Deflectalien
+from Objects.Enemies.alien import Alien
+from Objects.Enemies.enemyship import Enemyship
 pygame.init()
 pygame.font.init()
 pygame.mixer.init()
@@ -19,42 +21,35 @@ pygame.display.set_caption("Programming Project")
 clock = pygame.time.Clock()
 
 background = textandimages.renderbackground()
-spaceshiphigh, spaceshipmid, spaceshiplow, spaceshiplaserlow, spaceshiplaserhigh, bullet, deflectbullettexture, dangerzone, superbullettexture, lasertexture, explosion = textandimages.rendergraphics()
-alientexture, deflectalientexture, enemyshiptexture, bosstexture = textandimages.renderenemies()
+
+spaceshiphigh, spaceshipmid, spaceshiplow, spaceshiplaserlow, spaceshiplaserhigh, bullet, deflectbullettexture, dangerzone, superbullettexture, lasertexture, explosion, missiletexture = textandimages.rendergraphics()
+
+alientexture, alienhealthtexture, alienfasttexture, aliendamagetexture, deflectalientexture, deflectalienhealthtexture, deflectalienfasttexture, deflectaliendamagetexture, enemyshiptexture, bosstexture = textandimages.renderenemies()
+
 hearttexture, energytexture = textandimages.renderpowerups()
 shootsfx, superbulletsfx, lasersfx, boomsfx, chargesfx, damagesfx, healsfx = soundeffects.sfx()
 
 font = pygame.font.Font('Graphics/joystix monospace.otf', 20)
 
-objects = [ShipObject(spaceshiphigh, spaceshipmid, spaceshiplow, (300,550), 8, 10, 100,0, 0.2),
-           HealthBar(100, hearttexture),
-           Dangerzone(dangerzone, (0,580)),
-           Energybar(5,energytexture),
-           Scoreboard(),
-           Wavecounter(0)]
-
-ship = pygame.sprite.GroupSingle(ShipObject(spaceshiphigh, spaceshipmid, spaceshiplow, (300,550), 8, 100, 100,0, 0.2))
+ship = pygame.sprite.GroupSingle(ShipObject(spaceshiphigh, spaceshipmid, spaceshiplow, (300,550), 10, 100, 100,0, 0.2))
 shipobj = ship.sprites()[0]
 
 uigroup = pygame.sprite.Group(HealthBar(100, hearttexture),
            Dangerzone(dangerzone, (0,580)),
            Energybar(5,energytexture),
            Scoreboard(),
-           Wavecounter(5))
+           Wavecounter(8))
 
 enemies = pygame.sprite.Group()
-#Boss(bosstexture, (300,200), 4,3.0, 100, 1)
 bullets = pygame.sprite.Group()
-
+#Boss(bosstexture, (300,200), 100,3.0, 100, 1))
 powerups = pygame.sprite.Group()
 
+explosions = pygame.sprite.Group()
+run = True
 
+while run:
 
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            exit()
 
 
     # updates every object in the list objects
@@ -63,7 +58,7 @@ while True:
     enemies.update()
     bullets.update()
     powerups.update()
-
+    explosions.update()
 
     screen.blit(background, (0,0))
 
@@ -72,18 +67,35 @@ while True:
 
     for object in ship.sprites():
         object.draw(screen)
+
     for object in uigroup.sprites():
         object.draw(screen)
+
     for object in enemies.sprites():
         object.draw(screen)
-    for object in bullets.sprites():
-        bullets.draw(screen)
-    for object in powerups.sprites():
-        powerups.draw(screen)
 
+    for object in bullets.sprites():
+        object.draw(screen)
+
+    for object in powerups.sprites():
+        object.draw(screen)
+
+    for object in explosions.sprites():
+        object.draw(screen)
 
 
     # updates display
     pygame.display.update()
     # updates clock
     clock.tick(60)
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+
+
+pygame.quit()
+with open("highscore.txt", "a") as f:
+    f.write("penis")
+
+exit()
