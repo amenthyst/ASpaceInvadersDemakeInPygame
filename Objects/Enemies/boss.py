@@ -3,7 +3,7 @@ from Objects.Enemies.deflectbullet import Deflectbullet
 from Objects.Enemies.explosion import Explosion
 from Objects.Powerups.heart import Heart
 from Objects.Powerups.energy import Energy
-from Otherscripts.damagable import damagable
+from Initializescripts.damagable import damagable
 import pygame
 
 class Boss(pygame.sprite.Sprite, damagable):

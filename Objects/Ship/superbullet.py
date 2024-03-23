@@ -1,5 +1,5 @@
 
-from Otherscripts import damagable
+from Initializescripts import damagable
 import pygame
 class Superbullet(pygame.sprite.Sprite):
     def __init__(self, superbullettexture, position: tuple, speed: float, damage: int, piercing: int):

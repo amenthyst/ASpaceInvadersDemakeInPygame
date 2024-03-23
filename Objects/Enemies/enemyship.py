@@ -1,6 +1,6 @@
 
 from Objects.Enemies.deflectbullet import Deflectbullet
-from Otherscripts.damagable import damagable
+from Initializescripts.damagable import damagable
 from Objects.Powerups.heart import Heart
 from Objects.Powerups.energy import Energy
 from Objects.Enemies.explosion import Explosion

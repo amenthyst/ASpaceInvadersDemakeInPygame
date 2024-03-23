@@ -1,13 +1,13 @@
 import pygame
 from sys import exit
-from Otherscripts import textandimages
+from Initializescripts import initialize
 from Objects.Ship.ship import ShipObject
 from Objects.UIs.healthbar import HealthBar
 from Objects.UIs.energybar import Energybar
 from Objects.UIs.dangerzone import Dangerzone
 from Objects.UIs.scoreboard import Scoreboard
 from Objects.Enemies.boss import Boss
-from Otherscripts import soundeffects
+from Initializescripts import soundeffects
 from Objects.UIs.wavecounter import Wavecounter
 from Objects.Enemies.deflectalien import Deflectalien
 from Objects.Enemies.alien import Alien
@@ -20,19 +20,25 @@ border = pygame.Rect(0, 0, 600, 580)
 pygame.display.set_caption("Programming Project")
 clock = pygame.time.Clock()
 
-background = textandimages.renderbackground()
+background = initialize.renderbackground()
 
-spaceshiphigh, spaceshipmid, spaceshiplow, spaceshiplaserlow, spaceshiplaserhigh, bullet, deflectbullettexture, dangerzone, superbullettexture, lasertexture, explosion, missiletexture = textandimages.rendergraphics()
+spaceshiphigh, spaceshipmid, spaceshiplow, spaceshiplaserlow, spaceshiplaserhigh, bullet, deflectbullettexture, dangerzone, superbullettexture, lasertexture, explosion, missiletexture = initialize.rendergraphics()
 
-alientexture, alienhealthtexture, alienfasttexture, aliendamagetexture, deflectalientexture, deflectalienhealthtexture, deflectalienfasttexture, deflectaliendamagetexture, enemyshiptexture, bosstexture = textandimages.renderenemies()
+alientexture, alienhealthtexture, alienfasttexture, aliendamagetexture, deflectalientexture, deflectalienhealthtexture, deflectalienfasttexture, deflectaliendamagetexture, enemyshiptexture, bosstexture = initialize.renderenemies()
 
-hearttexture, energytexture = textandimages.renderpowerups()
+hearttexture, energytexture = initialize.renderpowerups()
+
+highscore, bestwave, unlocksuperbullet, unlocklaser, unlockmissile = initialize.getstats()
+
 shootsfx, superbulletsfx, lasersfx, boomsfx, chargesfx, damagesfx, healsfx = soundeffects.sfx()
 
 font = pygame.font.Font('Graphics/joystix monospace.otf', 20)
 
 ship = pygame.sprite.GroupSingle(ShipObject(spaceshiphigh, spaceshipmid, spaceshiplow, (300,550), 10, 100, 100,0, 0.2))
 shipobj = ship.sprites()[0]
+
+savelist = [highscore, bestwave, unlocksuperbullet, unlocklaser, unlockmissile]
+
 
 uigroup = pygame.sprite.Group(HealthBar(100, hearttexture),
            Dangerzone(dangerzone, (0,580)),
@@ -48,13 +54,19 @@ powerups = pygame.sprite.Group()
 explosions = pygame.sprite.Group()
 run = True
 
+
+
+
+
+
 while run:
 
 
 
     # updates every object in the list objects
     ship.update()
-    uigroup.update()
+    if len(ship.sprites()) != 0:
+        uigroup.update()
     enemies.update()
     bullets.update()
     powerups.update()
@@ -95,7 +107,8 @@ while run:
 
 
 pygame.quit()
-with open("highscore.txt", "a") as f:
-    f.write("penis")
+
+
+initialize.savefile(savelist)
 
 exit()

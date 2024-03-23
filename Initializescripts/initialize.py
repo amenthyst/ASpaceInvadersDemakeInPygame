@@ -70,3 +70,39 @@ def renderpowerups():
     energytexture = pygame.image.load("Graphics/powerups/energy.png").convert_alpha()
     energytexture = pygame.transform.scale(energytexture, (30,30))
     return hearttexture, energytexture
+
+def getstats():
+    with open('highscore.txt', 'r') as f:
+        highscore = int(f.readline()[11:])
+        bestwave = int(f.readline()[11:])
+        unlocksuperbullet = bool(f.readline()[19:])
+        unlocklaser = bool(f.readline()[13:])
+        unlockmissile = bool(f.readline()[15:])
+    return highscore, bestwave, unlocksuperbullet, unlocklaser, unlockmissile
+
+def savefile(savelist):
+    import main
+
+
+
+    score = main.uigroup.sprites()[3].score
+    wave = main.uigroup.sprites()[4].currentwave-1
+
+    updatelist = [score, wave]
+    prefixlist = ['Highscore: ', 'Best Wave: ', 'UnlockSuperbullet: ', 'UnlockLaser: ', 'UnlockMissile: ']
+
+
+    with open('highscore.txt', 'r') as f:
+        lines = f.readlines()
+
+    for index, item in enumerate(savelist):
+        try:
+            if updatelist[index] >= item:
+                lines[index] = prefixlist[index] + str(updatelist[index]) + "\n"
+        except IndexError:
+            continue
+
+    with open('highscore.txt', 'w') as f:
+        f.writelines(lines)
+
+

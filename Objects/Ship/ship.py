@@ -1,6 +1,6 @@
 import pygame
 from Objects.Ship.bullet import Bullet
-from Otherscripts.damagable import damagable
+from Initializescripts.damagable import damagable
 from Objects.Ship.superbullet import Superbullet
 from Objects.Ship.laser import Laser
 from Objects.Enemies.explosion import Explosion

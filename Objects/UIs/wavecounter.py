@@ -14,7 +14,7 @@ class Wavecounter(pygame.sprite.Sprite):
         self.dt = 0
         self.colorindex = 0
         self.image = font.render(f"WAVE: {self.currentwave-1}", False, "white")
-        self.rect = self.image.get_rect(center=(83,70))
+        self.rect = self.image.get_rect(center=(70,40))
 
     def wavecounter(self):
         # counter of 1 second
@@ -41,6 +41,8 @@ class Wavecounter(pygame.sprite.Sprite):
         screen.blit(self.image, self.rect)
         if self.currentwave == self.numberofwaves:
             screen.blit(self.goaltext, (23,80))
+        if main.bestwave < self.currentwave:
+            screen.blit(self.wavetext, (430,23))
 
 
     def update(self):
@@ -66,6 +68,7 @@ class Wavecounter(pygame.sprite.Sprite):
         from main import font
         # flashes the text with rainbow colors
         self.goaltext = font.render("FINAL WAVE!", False, self.colors[self.colorindex])
+        self.wavetext = font.render("BEST WAVE!", False, self.colors[self.colorindex])
         if self.cooldown() is not None:
             self.colorindex += 1
         if self.colorindex >= len(self.colors):

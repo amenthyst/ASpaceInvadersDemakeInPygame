@@ -1,5 +1,5 @@
 
-from Otherscripts.damagable import damagable
+from Initializescripts.damagable import damagable
 from Objects.Enemies.deflectbullet import Deflectbullet
 import random
 from Objects.Powerups.heart import Heart
@@ -25,9 +25,12 @@ class Deflectalien(pygame.sprite.Sprite, damagable):
     def draw(self, screen):
         screen.blit(self.image, self.rect)
     def move(self):
-        self.rect.y += self.speed
-        if self.rect.y > 800:
+        if self.rect.y < 0:
+            self.rect.y += (self.speed * 1.5)
+        elif self.rect.y >= 800:
             self.kill()
+        else:
+            self.rect.y += self.speed
 
     def damage(self, damage):
         self.health -= damage

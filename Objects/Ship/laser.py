@@ -1,5 +1,5 @@
 
-from Otherscripts.damagable import damagable
+from Initializescripts.damagable import damagable
 import pygame
 class Laser(pygame.sprite.Sprite):
 

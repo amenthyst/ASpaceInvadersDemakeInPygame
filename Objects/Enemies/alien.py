@@ -1,7 +1,7 @@
 import pygame.time
 
 
-from Otherscripts.damagable import damagable
+from Initializescripts.damagable import damagable
 from Objects.Powerups.heart import Heart
 from Objects.Powerups.energy import Energy
 from Objects.Enemies.explosion import Explosion
@@ -32,9 +32,12 @@ class Alien(pygame.sprite.Sprite, damagable):
         return "Alien"
     def move(self):
         # moves down the screen
-        self.rect.y += self.speed
-        if self.rect.y >= 800:
+        if self.rect.y < 0:
+            self.rect.y += (self.speed * 1.5)
+        elif self.rect.y >= 800:
             self.kill()
+        else:
+            self.rect.y += self.speed
     def damage(self, damage):
         self.health -= damage
         self.speed += 0.2

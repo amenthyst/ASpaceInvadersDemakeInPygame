@@ -1,5 +1,5 @@
 
-from Otherscripts.damagable import damagable
+from Initializescripts.damagable import damagable
 import pygame
 
 class Dangerzone(pygame.sprite.Sprite, damagable):
@@ -18,9 +18,5 @@ class Dangerzone(pygame.sprite.Sprite, damagable):
         import main
         main.shipobj.addscore(-damage*4)
         main.shipobj.Harddamage(damage)
-    def checkdeath(self):
-        import main
-        if len(main.ship.sprites()) == 0:
-            self.kill()
     def update(self):
-        self.checkdeath()
+        pass

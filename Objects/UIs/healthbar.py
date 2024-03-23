@@ -27,9 +27,11 @@ class HealthBar(pygame.sprite.Sprite):
 
         ratio = self.currenthealth / self.max_health
 
+        if self.currenthealth < 0:
+            self.currenthealth = 0
+
         self.healthtext = str(self.currenthealth)
         self.textsurface = main.font.render(self.healthtext, False, "black")
-
 
 
         # draws remaining health
@@ -38,6 +40,9 @@ class HealthBar(pygame.sprite.Sprite):
             pygame.draw.rect(screen,self.color,(55,554,117*ratio,17))
         else:
             self.currenthealth = 0
+
+
+
         screen.blit(self.textsurface, (70,549))
         screen.blit(self.hearttexturenew, self.rect)
 
@@ -49,10 +54,3 @@ class HealthBar(pygame.sprite.Sprite):
         return self.rect
     def getID(self):
         return "Healthbar"
-    def addscore(self, score):
-        pass
-    def getscore(self):
-        pass
-
-    def getposition(self):
-        pass

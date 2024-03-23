@@ -1,4 +1,4 @@
-from Otherscripts import damagable
+from Initializescripts import damagable
 import pygame
 
 
